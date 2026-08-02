@@ -1,0 +1,65 @@
+DO SERVICE / CHANGE REQUEST TICKET!!
+ALREADY IMPLEMENTED ON RIVANLABS
+c1/d1:
+config t
+Interface vlan 2
+name PETRONINC.COM
+desc PETRONINC.COM
+no shut
+ip add 10.0.8.1 255.255.248.0
+ip dhcp excluded-add 10.0.8.1 10.0.8.50
+ip dhcp pool ETRONINC.COM
+network 10.0.8.0 255.255.248.0
+default-router 10.0.8.1
+domain-name PETRONINC.COM
+end
+
+A1 Switch:
+confg t
+int e0/0
+switchport mode access
+switchport access vlan 2
+do sh vlan brief
+end
+
+P1: petronPC:
+config t
+int e0/0
+no shut
+ip address dhcp
+end
+
+TASK 7: IMPLEMENTATION
+
+c1/d1:
+config t
+Interface vlan 4
+name PHOENIXINC.COM
+desc PHOENIXINC.COM
+no shut
+ip add 10.0.0.65 255.255.255.192
+ip dhcp excluded-add 10.0.0.65 10.0.0.69
+ip dhcp pool PHOENIXINC.COM
+network 10.0.0.64 255.255.255.192
+default-router 10.0.0.65
+domain-name PHOENIXINC.COM
+end
+
+A1 Switch:
+confg t
+int e0/1
+switchport mode access
+switchport access vlan 4
+do sh vlan brief
+end
+
+(DO NOTHING)
+P1: petronPC:
+config t
+int e0/0
+no shut
+ip address dhcp
+end
+
+
+
