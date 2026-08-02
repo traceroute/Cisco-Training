@@ -62,4 +62,48 @@ ip address dhcp
 end
 
 
+TASK 8:
+CALTEXPH.COM 10.0.0.0/8 -> 8500HOST:
+C: 14 BITS
+S /43- /14 = /18
+i: 3RD OCT,64i
+URS: 10.0.64.0/18
+1ST: 10.0.64.1
+LSP: 10.0.66.255 (BROADCAST)
+NOTURS: 10.0.67.0
+
+C1/D1/:
+
+config t
+vlan 8
+name CALTEXINC.COM
+interface vlan 8
+desc CALTEXINC.COM
+no shut
+ip add 10.0.64.1 255.255.255.192
+ip dhcp excluded-add 10.0.64.1 10.0.67.50
+ip dhcp pool CALTEXINC.COM
+network 10.0.64.0 255.255.255.192
+default-router 10.0.64.0
+domain-name CALTEXINC.COM
+end
+
+A1 Switch:
+config t
+int e0/0
+switchport mode access
+switchport access vlan 8
+do sh vlan brief
+end
+
+S2: CALTEXINC.COM:
+config t
+int e3/0
+no shut
+ip address dhcp
+end
+
+
+TASK 9 IPV6
+
 
