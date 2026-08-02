@@ -1,5 +1,3 @@
-DO SERVICE / CHANGE REQUEST TICKET!!
-ALREADY IMPLEMENTED ON RIVANLABS
 c1/d1:
 config t
 Interface vlan 2
@@ -33,8 +31,9 @@ TASK 7: IMPLEMENTATION
 
 c1/d1:
 config t
-Interface vlan 4
+vlan 4
 name PHOENIXINC.COM
+interface vlan 4
 desc PHOENIXINC.COM
 no shut
 ip add 10.0.0.65 255.255.255.192
@@ -46,8 +45,8 @@ domain-name PHOENIXINC.COM
 end
 
 A1 Switch:
-confg t
-int e0/1
+config t
+int e1/0
 switchport mode access
 switchport access vlan 4
 do sh vlan brief
@@ -56,7 +55,7 @@ end
 (DO NOTHING)
 P1: petronPC:
 config t
-int e0/0
+int e1/0
 no shut
 ip address dhcp
 end
