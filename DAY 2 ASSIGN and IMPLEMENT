@@ -1,4 +1,5 @@
-c1/d1:
+C1/D1:
+
 config t
 Interface vlan 2
 name PETRONINC.COM
@@ -29,7 +30,8 @@ end
 
 TASK 7: IMPLEMENTATION
 
-c1/d1:
+C1/D1:
+
 config t
 vlan 4
 name PHOENIXINC.COM
@@ -52,7 +54,6 @@ switchport access vlan 4
 do sh vlan brief
 end
 
-(DO NOTHING)
 P2: phoenixPC:
 config t
 int e1/0
