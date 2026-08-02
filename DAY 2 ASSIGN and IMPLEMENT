@@ -53,7 +53,7 @@ do sh vlan brief
 end
 
 (DO NOTHING)
-P2: petronPC:
+P2: phoenixPC:
 config t
 int e1/0
 no shut
