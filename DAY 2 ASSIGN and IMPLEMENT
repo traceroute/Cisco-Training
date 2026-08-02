@@ -44,7 +44,7 @@ default-router 10.0.0.65
 domain-name PHOENIXINC.COM
 end
 
-A1 Switch:
+A2 Switch:
 config t
 int e1/0
 switchport mode access
@@ -53,7 +53,7 @@ do sh vlan brief
 end
 
 (DO NOTHING)
-P1: petronPC:
+P2: petronPC:
 config t
 int e1/0
 no shut
