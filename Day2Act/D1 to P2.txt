@@ -1,0 +1,39 @@
+D1:
+enable
+configure terminal
+vlan 6
+name MCDO.PH
+interface vlan 6
+description MCDOSTORE
+no shutdown
+ip address 10.0.4.1 255.255.254.0
+ip dhcp excluded-address 10.0.4.1 10.0.2.10
+ip dhcp pool MCDO.PH
+network 10.0.4.0 255.255.254.0
+default-router 10.0.4.1
+domain-name MCDO.PH
+exit
+end
+write memory
+
+A2:
+enable
+configure terminal
+vlan 6
+name MCDO.PH
+exit
+interface e1/0
+switchport mode access
+switchport access vlan 6
+no shutdown
+end
+write memory
+
+P2:
+enable
+configure terminal
+interface E1/0
+ip address dhcp
+no shutdown
+end
+write memory

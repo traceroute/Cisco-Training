@@ -1,0 +1,33 @@
+D2:
+enable
+configure terminal
+vlan 10
+name KFC.PH
+interface vlan 10
+description KFCVPN
+no shutdown
+ip address 172.16.0.1 255.255.255.240
+ip dhcp excluded-address 172.16.0.1 172.16.0.4
+ip dhcp pool KFC.PH
+network 172.16.0.0 255.255.255.240
+default-router 172.16.0.1
+domain-name KFC.PH
+no ip dhcp conflict logging
+interface Ethernet1/0
+switchport mode access
+switchport access vlan 10
+no shutdown
+exit
+end
+write memory
+
+S2:
+enable
+configure terminal
+interface e1/0
+no shut
+ip address dhcp
+end
+config t
+do bp
+

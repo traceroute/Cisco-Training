@@ -1,0 +1,32 @@
+D1:
+enable
+configure terminal
+vlan 7
+name TNC.COM
+interface vlan 7
+description TNCPC
+no shutdown
+ip address 192.168.70.1 255.255.255.0
+ip dhcp excluded-address 192.168.70.1
+ip dhcp pool TNC.COM
+network 192.168.70.0 255.255.255.0
+default-router 192.168.70.1
+domain-name TNC.COM
+no ip dhcp conflict logging
+interface Ethernet1/0
+switchport mode access
+switchport access vlan 7
+no shutdown
+exit
+end
+write mem
+
+
+S1:
+enable
+configure terminal
+int e1/0
+no shut
+ip address dhcp
+end
+
