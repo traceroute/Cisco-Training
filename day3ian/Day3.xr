@@ -153,4 +153,4 @@ configure terminal
 
 R2:
 configure terminal
-
+interface e1/2
