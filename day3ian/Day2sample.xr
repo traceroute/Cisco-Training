@@ -1,0 +1,137 @@
+IP ASSIGNMENT
+
+P1: 
+configure terminal
+interface e0/0
+no shutdown
+ip address 10.2.1.101 255.255.255.0
+do bp
+end
+
+P2: 
+configure terminal
+interface e1/0
+no shutdown
+ip address 10.2.1.102 255.255.255.0
+do bp
+end
+
+S1:
+configure terminal
+interface e1/0
+no shutdown
+ip address 192.168.1.133 255.255.255.224
+do bp
+end
+
+S2:
+configure terminal
+interface e1/0
+no shutdown
+ip address 10.2.2.133 255.255.255.0
+do bp
+end
+
+A1:
+configure terminal
+vlan 10,20,100
+exit
+interface e0/0
+switchport mode access
+switchport access vlan 10
+no shutdown
+! Configure Inter-Switch Trunk Uplink
+interface e0/1
+switchport trunk encapsulation dot1q
+switchport mode trunk
+no shutdown
+end
+show vlan
+
+A2:
+configure terminal
+vlan 10,20,100
+exit
+interface e1/0
+switchport mode access
+switchport access vlan 10
+no shutdown
+! Configure Inter-Switch Trunk Uplink
+interface e0/1
+switchport trunk encapsulation dot1q
+switchport mode trunk
+no shutdown
+end
+show vlan
+
+D1: 
+configure terminal
+ip routing
+vlan 10,20,100
+exit
+interface e1/0
+switchport mode access
+switchport access vlan 100
+no shutdown
+! Configure Inter-Switch Trunk Uplink
+interface e0/1
+switchport trunk encapsulation dot1q
+switchport mode trunk
+no shutdown
+! Default Gateways (SVIs)
+interface Vlan10
+ip address 10.2.1.1 255.255.255.0
+no shutdown
+interface Vlan20
+ip address 10.2.2.2 255.255.255.0
+no shutdown
+interface Vlan100
+ip address 192.168.1.129 255.255.255.224
+no shutdown
+end
+show vlan
+
+D2:
+configure terminal
+ip routing
+vlan 10,20,100
+exit
+interface e1/0
+switchport mode access
+switchport access vlan 20
+no shutdown
+! Configure Inter-Switch Trunk Uplink
+interface e0/1
+switchport trunk encapsulation dot1q
+switchport mode trunk
+no shutdown
+! Backup Gateway (SVI for floating route test)
+interface Vlan10
+ip address 10.2.1.2 255.255.255.0
+no shutdown
+end
+show vlan
+
+
+FLOATING STATIC ROUTE CONFIGURATION
+
+P1:
+configure terminal
+ip route 0.0.0.0 0.0.0.0 10.2.1.1
+ip route 0.0.0.0 0.0.0.0 10.2.1.2 10
+end
+
+P2:
+configure terminal
+ip route 0.0.0.0 0.0.0.0 10.2.1.1
+end
+
+S1:
+configure terminal
+ip route 0.0.0.0 0.0.0.0 192.168.1.129
+end
+
+S2:
+configure terminal
+ip route 0.0.0.0 0.0.0.0 10.2.2.2 
+end

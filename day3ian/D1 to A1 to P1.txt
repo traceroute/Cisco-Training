@@ -1,0 +1,33 @@
+D1:
+enable
+configure terminal
+vlan 5
+name JOLLIBEE.PH
+interface vlan 5
+description JBSTORE
+no shutdown
+ip address 10.0.32.1 255.255.240.0
+ip dhcp excluded-address 10.0.32.1 10.0.32.10
+ip dhcp pool JOLLIBEE.PH
+network 10.0.32.0 255.255.240.0
+default-router 10.0.32.1
+domain-name JOLLIBEE.PH
+no ip dhcp conflict logging
+end
+write memory
+
+A1:
+enable
+configure terminal
+interface e0/0
+switchport mode access
+switchport access vlan 5
+end
+
+P1:
+enable
+configure terminal
+interface E0/0
+ip address dhcp
+no shut
+do bp
