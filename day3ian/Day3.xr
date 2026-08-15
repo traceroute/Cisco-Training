@@ -97,7 +97,7 @@ router eigrp 100
 network 10.2.1.0 0.0.0.255
 network 10.2.2.0 0.0.0.255
 network 192.168.1.128 0.0.0.31
-network 10.1.4.4 0.0.0.30
+network 10.1.4.4 0.0.0.3
 end
 show ip eigrp neighbors
 show ip route eigrp
@@ -108,7 +108,7 @@ router eigrp 100
 network 10.2.1.0 0.0.0.255
 network 10.2.2.0 0.0.0.255
 network 192.168.1.128 0.0.0.31
-network 10.1.4.8 0.0.0.3
+network 10.1.4.8 0.0.0.3 
 end
 show ip eigrp neighbors
 
@@ -154,3 +154,7 @@ configure terminal
 R2:
 configure terminal
 interface e1/2
+
+
+
+
