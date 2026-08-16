@@ -433,11 +433,11 @@ I2:
 configure terminal
 router bgp 2
 bgp log-neighbor-changes
-neighbor 25.25.5.5 remote-as 45
+neighbor 25.2.5.5 remote-as 45
 neighbor 24.4.4.4 remote-as 45
 neighbor 207.7.7.1 remote-as 1
 neighbor 32.3.2.3 remote-as 3
-network 25.25.5.5.0 mask 255.255.255.0
+network 25.2.5.0 mask 255.255.255.0
 network 24.2.4.0 mask 255.255.255.0
 network 207.7.7.0 mask 255.255.255.0
 network 32.3.2.0 mask 255.255.255.0

@@ -470,11 +470,6 @@ conf t
  no shut
 end
 
-
-
-
-
-
 @D2
 conf t
  ip dhcp excluded-address 10.2.2.1 10.2.2.99
