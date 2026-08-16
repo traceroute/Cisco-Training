@@ -1,0 +1,100 @@
+@A1
+config terminal
+interface vlan 101
+name vlan101.com
+exit
+interface vlan 101
+ip address 10.100.10.65 255.255.255.192
+no shutdown
+
+ip dhcp excluded-address 10.100.10.65 10.100.10.70
+ip dhcp pool  vlan101.com
+network 10.100.10.64 255.255.255.192 
+default-router 10.100.10.65
+
+interface e0/0
+switchport mode access
+switchport access vlan 101
+
+@D1
+config terminal
+vlan 102
+name vlan102.com
+exit
+interface vlan 102
+ip address 10.100.10.129 255.255.255.224
+no shutdown
+
+ip dhcp excluded-address 10.100.10.129 10.100.10.131
+ip dhcp pool  vlan102.com
+network 10.100.10.128 255.255.255.224 
+default-router 10.100.10.129
+
+interface e1/0
+switchport mode access
+switchport access vlan 102
+end
+
+
+@S1:
+configure terminal
+interface e1/0
+ip address dhcp 
+no shutdown
+end
+bp
+
+
+@A2
+config terminal
+interface vlan 103
+name vlan103.com
+exit
+interface vlan 103
+ip address 10.100.10.161 255.255.255.240
+no shutdown
+
+ip dhcp excluded-address 10.100.10.161 10.100.10.162
+ip dhcp pool  vlan103.com
+network 10.100.10.64 255.255.255.240
+default-router 10.100.10.162
+
+interface e1/0
+switchport mode access
+switchport access vlan 103
+end
+
+
+P2:
+configure terminal
+interface e1/0
+ip address dhcp 
+no shutdown
+end
+bp
+
+@D2:
+config terminal
+interface vlan 104
+name vlan104.com
+exit
+interface vlan 104
+ip address 10.100.10.177 255.255.255.248
+no shutdown
+
+ip dhcp pool  vlan104.com
+network 10.100.10.177 255.255.255.248
+default-router 10.100.10.177
+
+interface e1/0
+switchport mode access
+switchport access vlan 104
+end
+
+S2:
+configure terminal
+interface e1/0
+ip address dhcp 
+no shutdown
+end
+bp
