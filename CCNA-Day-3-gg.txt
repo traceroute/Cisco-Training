@@ -1,0 +1,759 @@
+A corporate moffice uses four floors in a building,
+design and implement with 10.100.10.0 IP.
+*Floor 1 has 24 users
+*Floor 2 has 29 users
+*Floor 3 has 28 users
+*Floor 4 has 22 users
+
+Which of the following is the most appropriate subnet mask to implement?
+
+a. 255.255.255.240 for each floor
+b. 255.255.255.248 for each floor
+c. 255.255.255.224 for each floor**
+d. 255.255.255.0 for each floor
+
+C: 24 users = 5 bits
+S: /32 - /5 = /27 (4th, 32i)
+I: Ipasok sa 4th si 32 (at kada 32 each floor)
+
+Floor1 (Lo1)
+N: 10.100.10.32
+F: 10.100.10.33
+L: 10.100.10.62
+B: 10.100.10.63
+
+Floor2
+N: 10.100.10.64
+F: 10.100.10.65
+L: 10.100.10.94
+B: 10.100.10.95
+
+Floor3
+N: 10.100.10.96
+F: 10.100.10.97
+L: 10.100.10.126
+B: 10.100.10.127
+
+Floor4
+N: 10.100.10.128
+F: 10.100.10.129
+L: 10.100.10.158
+B: 10.100.10.159
+
+Floor5: 
+N: 10.100.10.160
+F: 10.100.10.161
+L: 10.100.10.190
+B: 10.100.10.191
+
+not: 10.100.10.192
+
+!IMPLEMENTATION:
+conf t
+ int lo1
+ ip add 10.100.10.33 255.255.255.224
+ no shut
+
+ int lo2
+ ip add 10.100.10.65 255.255.255.224
+ no shut
+
+ int lo3
+ ip add 10.100.10.97 255.255.255.224
+ no shut
+
+ int lo4
+ ip add 10.100.10.129 255.255.255.224
+ no shut
+end
+
+
+
+
+A corporate moffice uses four floors in a building,
+design and implement with 10.100.10.0 IP.
+*Floor 1 has 50 users (VLAN101)
+*Floor 2 has 30 users (VLAN102)
+*Floor 3 has 14 users (VLAN103)
+*Floor 4 has 6 users (VLAN104)
+
+@Floor1 (VLAN101)
+C: 50 = 6 bits
+S: /32 - /6 = /26 (4th, 64i)
+I: Ipasok sa 4th si 64
+
+N: 10.100.10.64
+F: 10.100.10.65
+L: 10.100.10.126
+B: 10.100.10.127
+
+@Floor2 (VLAN102)
+C: 30 = 5 bits
+S: /32 - 5 = /27 (4th, 32i)
+I: Ipasok sa 4th si 32
+
+N: 10.100.10.128
+F: 10.100.10.129
+L: 10.100.10.158
+B: 10.100.10.159
+
+@Floor3 (VLAN103)
+C: 14 = 4 bits
+S: /32 - 4 = /28 (4th, 16i)
+I: Ipasok sa 4th si 16
+
+N: 10.100.10.160
+F: 10.100.10.161
+L: 10.100.10.174
+B: 10.100.10.175
+
+@Floor4 (VLAN104)
+C: 6 = 3 bits
+S: /32 - 3 = /29 (4th, 8i)
+I: Ipasok sa 4th si 8
+
+
+N: 10.100.10.176
+F: 10.100.10.177
+L: 10.100.10.182
+B: 10.100.10.183
+notFLOOR1234: 10.100.10.184
+
+
+!IMPLEMENTATION:
+(FIRST FLOOR)
+@A1
+conf t
+ vlan 101
+ name vlan101.com
+ exit
+ int vlan 101
+ ip add 10.100.10.65 255.255.255.192
+ no shut
+
+ ip dhcp excluded-address 10.100.10.65 10.100.10.70
+ ip dhcp pool vlan101.com
+ network 10.100.10.64 255.255.255.192
+ default-router 10.100.10.65
+
+ int e0/0
+ switchport mode access
+ switchport access vlan 101
+ end 
+
+@P1
+conf t
+ int e0/0
+ ip add dhcp
+ no shut
+ end
+ sh ip int br | ex una
+ 
+
+
+
+
+
+
+
+
+
+
+(SECOND FLOOR)
+@D1/C1
+conf t
+ vlan 102
+ name vlan102.com
+ exit
+ int vlan 102
+ ip add 10.100.10.129 255.255.255.224
+ no shut
+
+ ip dhcp excluded-address 10.100.10.129 10.100.10.131
+ ip dhcp pool vlan102.com
+ network 10.100.10.128 255.255.255.224
+ default-router 10.100.10.129
+
+ int e1/0
+ switchport mode access
+ switchport access vlan 102
+ end 
+
+@S1
+conf t
+ int e1/0
+ ip add dhcp
+ no shut
+ end
+ sh ip int br | ex una
+
+
+
+
+
+(THIRD FLOOR)
+@A2
+conf t
+ vlan 103
+ name vlan103.com
+ exit
+ int vlan 103
+ ip add 10.100.10.161 255.255.255.240
+ no shut
+
+ ip dhcp excluded-address 10.100.10.161 10.100.10.162
+ ip dhcp pool vlan103.com
+ network 10.100.10.160 255.255.255.240
+ default-router 10.100.10.161
+
+ int e1/0
+ switchport mode access
+ switchport access vlan 103
+ end
+
+@P2
+conf t
+ int e1/0
+ ip add dhcp
+ no shut
+ end
+ sh ip int br | ex una
+
+
+
+
+
+(FOURTH FLOOR)
+@C2/D2
+conf t
+ vlan 104
+ name vlan104.com
+ exit
+ int vlan 104
+ ip add 10.100.10.177 255.255.255.248
+ no shut
+
+ ip dhcp excluded-address 10.100.10.177 10.100.10.177
+ ip dhcp pool vlan104.com
+ network 10.100.10.176 255.255.255.248
+ default-router 10.100.10.177
+
+ int e1/0
+ switchport mode access
+ switchport access vlan 104
+ end
+
+@S2
+conf t
+ int e1/0
+ ip add dhcp
+ no shut
+ end
+ sh ip int br | ex una
+
+
+
+5 hit combo in subnetting for finding the number of
+subnets
+
+Design and Implement 10.100.10.0 network for 
+5 offices/departmemt
+
+C: convert 5 offices to bits = 3 bits
+A: Add (/24 + /3 = /27 [4th, 32i])
+I: Ipasok si 32i sa kada 4th octet
+
+1st: 10.100.10.32/27
+2nd: 10.100.10.64/27
+3rd: 10.100.10.96/27
+4th 10.100.10.128/27
+5th: 10.100.10.160/27
+
+
+(If itotodo si /27... extra 4th and 5th combo)
+4. Find the total hosts each subnet:
+    /32 - _____ = /27 (2^5 = 32 - 2 = "30 hosts")
+
+ 5. Find all the subnets:
+    /24 + _____ = /27 (2^3 = "8 subnets")
+
+6th: 10.100.10.192/27
+7th: 10.100.10.224/27
+8th: 10.100.10.0/27  (IP subnet zero)
+
+
+!IMPLEMENT
+conf t
+
+int lo1000
+  ip add 10.100.10.1 255.255.255.224
+
+int lo1001
+ ip add 10.100.10.33 255.255.255.224
+
+int lo1002
+ ip add 10.100.10.65 255.255.255.224
+
+int lo1003
+ ip add 10.100.10.97 255.255.255.224
+
+int lo1004
+ ip add 10.100.10.129 255.255.255.224
+
+int lo1005
+ ip add 10.100.10.161 255.255.255.224
+
+int lo1006
+ ip add 10.100.10.193 255.255.255.224
+
+int lo1007
+ ip add 10.100.10.225 255.255.255.224
+
+end
+
+
+
+RIVAN CCNA Day 3: CISCO ROUTING PROTOCOLS
+
+To be a master of routing, know "IM BODSS"
+
+I - IS-IS (CCIE Level)
+M - MPLS (Multilayer PRtocol Switching) (CCNP Level)
+............(below is for CCNA)
+B - BGP (Border Gateway Protocol)
+O - OSPF (Open Shortest Path First)
+D - EIGRP (Enhanced Interior Gateway Protocol)
+-
+S - Static Route
+S* - Default Static (Stub Routing)
+
+
+Best practice in routing, thw two rules of pingable.
+PING = DIKIT
+ROUTE not DIKIT
+
+!STATIC ROUTING
+Administrative Distance of 2
+Also known for manual routing
+Apply static routes requires 2-way configuration
+   (origin & destination and vice-versa)
+Works on all Systems 
+
+recipe: ip route <not directly connected network IP>
+                 <subnet mask of NDCN>
+                 <Host IP of next hop>
+
+!R4 --> R2 (10.1.1.5)
+@R4
+conf t
+ ip route 10.1.1.4 255.255.255.252 10.1.1.9
+   !(10.1.1.4 is netIP for 10.1.1.5 & 10.1.1.6)
+ end
+
+@R2
+conf t
+ ip route 10.1.1.8 255.255.255.252 10.1.1.6
+  !(10.1.1.6 is netIP of 10.1.1.9 & 10.1.1.10)
+end
+
+
+
+
+!R3 --> R1 (10.1.1.1)
+@R3
+conf t
+ ip route 10.1.1.0 255.255.255.252 10.1.1.5
+   !(10.1.1.0 is netIP for 10.1.1.1 & 10.1.1.2)
+ end
+
+@R1
+conf t
+ ip route 10.1.1.4 255.255.255.252 10.1.1.2
+  !(10.1.1.4 is netIP of 10.1.1.5 & 10.1.1.6)
+end
+
+
+
+
+
+!R4 --> R1 (10.1.1.1)
+@R4
+conf t
+ ip route 10.1.1.0 255.255.255.252 10.1.1.9
+   !(10.1.1.0 is netIP for 10.1.1.1 & 10.1.1.2)
+ end
+
+@R1
+conf t
+ ip route 10.1.1.8 255.255.255.252 10.1.1.2
+  !(10.1.1.8 is netIP of 10.1.1.9 & 10.1.1.10)
+end
+
+@R1-R4
+conf t
+ no ip routing
+ ip routing
+end
+
+
+@S1
+conf t
+int e1/0
+ ip add 192.168.1.131 255.255.255.224
+ no shut
+ end
+bp
+
+
+@S2
+conf t
+int e1/0
+ ip add 192.168.1.132 255.255.255.224
+ no shut
+ end
+bp
+
+
+
+!connect S1/S2 to C1/C2 (D1/D2)
+@C1/C2 or D1/D2
+conf t
+ int e1/0
+ switch access vlan 100
+ end
+
+
+@S1
+! primarily S1 gateway to D1 (Primary) and D2 (Secondary)
+! Implementing floating Default Static
+conf t
+ ip route 0.0.0.0 0.0.0.0 192.168.1.129 1
+ ip route 0.0.0.0 0.0.0.0 192.168.1.130 2
+end
+
+
+
+@S2
+!Implement a floating static route
+conf t
+ ip route 10.2.1.1 255.255.255.255 192.168.1.130  (/32)
+ ip route 10.2.1.0 255.255.255.224 192.168.1.129 !(/27)
+end
+bp
+!/32 is better than /27: longest prefix rule.
+
+
+
+DYNAMIC ROUTING:
+
+!set DHCP Server for D1/D2
+@D1
+conf t
+ ip dhcp excluded-address 10.2.1.1 10.2.1.99
+ ip dhcp excluded-address 10.2.1.200 10.2.1.254
+ ip dhcp pool vlan10
+   network 10.2.1.0 255.255.255.0
+   default-router 10.2.1.254
+end 
+
+@A1
+conf t
+ int e0/0
+ switchport mode access
+ switchport access vlan 10
+end 
+
+@P1
+conf t
+ int e0/0
+ ip add dhcp
+ no shut
+end
+
+
+
+
+
+
+@D2
+conf t
+ ip dhcp excluded-address 10.2.2.1 10.2.2.99
+ ip dhcp excluded-address 10.2.2.200 10.2.2.254
+ ip dhcp pool vlan20
+   network 10.2.2.0 255.255.255.0
+   default-router 10.2.2.254
+end
+
+@A2
+conf t
+ int e1/0
+ switchport mode access
+ switchport access vlan 20
+end
+
+@P2
+conf t
+ int e1/0
+ ip add dhcp
+ no shut
+end
+
+
+EIGRP
+The best dynamic routing protocol
+Administrative Distance of 90
+Cisco Proprietary
+Same AS Number advertises
+
+EIGRP States
+Hello    Update   Query    Recieve    Acknowledge
+
+recipe:
+ router eigrp ### (Autonomous System No.)
+   no auto-summary
+   network <directly connected network> <wildcard DCN>
+
+@D1/C1
+conf t
+ router eigrp 100
+ no auto-summary
+ network 10.1.4.4
+ network 10.2.1.0
+ network 10.2.2.0
+ network 192.168.1.128
+end
+
+@D2/C2
+conf t
+ router eigrp 100
+ no auto-summary
+ network 10.1.4.8
+ network 10.2.1.0
+ network 10.2.2.0
+ network 192.168.1.128
+end
+
+
+
+@R4
+conf t
+ router eigrp 100
+ no auto-summary
+ network 10.1.4.8
+ network 10.1.4.4
+end
+
+
+OSPF Routing (Open Shortest Path first)
+Multi-Vendor Dynamic Routing Protocol
+Link State Advertisment
+Implements Dijkstra Algorithm
+Administrative Distance of 110
+Advertised by AREA (Area 0 is the Backbone)
+
+OSPF States:
+Down
+Init (Initialize)
+Two-Way
+Ex Start
+Exchange
+Loading
+Full
+
+recipe:
+router ospf # <Process ID>
+ router-id <ip>
+ network <DCN> <wildcard DCN> area <#>
+
+@r4
+conf t
+router ospf 1
+    router-id 4.4.4.4   
+    network 10.1.1.8 0.0.0.3 area 34 
+    network  4.4.4.4 0.0.0.0  area 34
+end
+
+@r3
+conf t
+router ospf 1
+    router-id 3.3.3.3
+    network 10.1.1.4 0.0.0.3 area 0
+    network 10.1.1.8 0.0.0.3 area 34
+    network  3.3.3.3 0.0.0.0  area 0
+end
+
+
+@r2
+conf t
+router ospf 1
+    router-id 2.2.2.2
+    network 10.1.1.4 0.0.0.3 area 0
+    network 10.1.1.0 0.0.0.3 area 12
+    network 2.2.2.2 0.0.0.0  area 0
+end
+
+
+@r1
+conf t
+router ospf 1
+    router-id 1.1.1.1
+    network 10.1.1.0 0.0.0.3 area 12
+    network 1.1.1.1 0.0.0.0  area 12
+end
+
+
+
+BGP Routing (Border Gateway Protocol)
+-Mostly used for WAN
+-Administrative Distance of 20
+-Also used by ISP and Large Corporations
+
+BGP States:
+Notification, Update, Keep-Alive, Open.
+
+recipe for BGP
+
+router bgp # <AS no.>
+ bgp log-neighbor-changes
+ neighbor <direct IP of next hop> remote-as # <AS. no of neighbor>
+ network <network IP between this host and neighbor> mask <SM to neighbor>
+end
+
+
+@R1
+conf t
+ router bgp 1
+ bgp log-neighbor-changes
+ neighbor 207.7.7.2 remote-as 2
+ neighbor 209.9.9.3 remote-as 3
+ neighbor 208.8.8.4 remote-as 45
+ network 207.7.7.0 mask 255.255.255.0
+ network 209.9.9.0 mask 255.255.255.0
+ network 208.8.8.0 mask 255.255.255.0
+ network 10.1.1.0 mask 255.255.255.252
+end
+
+
+@I1
+conf t
+ router bgp 45
+ bgp log-neighbor-changes
+ neighbor 45.4.5.5 remote-as 45
+ neighbor 24.2.4.2 remote-as 2
+ neighbor 208.8.8.1 remote-as 1
+ network 45.4.5.0 mask 255.255.255.0
+ network 24.2.4.0 mask 255.255.255.0
+ network 208.8.8.0 mask 255.255.255.0
+!PretendInternet
+ network 0.0.0.0
+ ip route 0.0.0.0 0.0.0.0 null 0
+ ip route 10.0.0.0 255.0.0.0 208.8.8.1
+ ip route 192.168.0.0 255.255.0.0 208.8.8.1
+end
+
+
+
+
+@I2
+conf t
+ router bgp 2
+ bgp log-neighbor-changes
+ neighbor 25.2.5.5 remote-as 45
+ neighbor 24.2.4.4 remote-as 45
+ neighbor 207.7.7.1 remote-as 1
+ neighbor 32.3.2.3 remote-as 3
+ network 25.2.5.0 mask 255.255.255.0
+ network 24.2.4.0 mask 255.255.255.0
+ network 207.7.7.0 mask 255.255.255.0
+ network 32.3.2.0 mask 255.255.255.0
+!PretendInternet
+ network 0.0.0.0
+ ip route 0.0.0.0 0.0.0.0 null 0
+ ip route 10.0.0.0 255.0.0.0 207.7.7.1
+ ip route 192.168.0.0 255.255.0.0 207.7.7.1
+end
+
+
+
+
+@I3
+conf t
+ router bgp 3
+ bgp log-neighbor-changes
+ neighbor 35.3.5.5 remote-as 45
+ neighbor 32.3.2.2 remote-as 2
+ neighbor 209.9.9.1 remote-as 1
+ network 35.3.5.0 mask 255.255.255.0
+ network 32.3.2.0 mask 255.255.255.0
+ network 209.9.9.0 mask 255.255.255.0
+ !PretendInternet
+ network 0.0.0.0
+ ip route 0.0.0.0 0.0.0.0 null 0
+ ip route 10.0.0.0 255.0.0.0 209.9.9.1
+ ip route 192.168.0.0 255.255.0.0 209.9.9.1
+end
+
+
+
+@I4
+conf t
+ int lo8
+ ip add 8.8.8.8 255.255.255.255
+ exit
+router bgp 45
+ bgp log-neighbor-changes
+ neighbor 45.4.5.4 remote-as 45
+ neighbor 25.2.5.2 remote-as 2
+ neighbor 35.3.5.3 remote-as 3
+ network 45.4.5.0 mask 255.255.255.0
+ network 25.2.5.0 mask 255.255.255.0
+ network 35.3.5.0 mask 255.255.255.0
+ network 8.8.8.8 mask 255.255.255.255
+end
+
+
+
+!ROUTE REDISTRIBUTION
+both configured routing protocols doesn't mean
+are automatically advertised.
+
+@R1 !(having BGP and OSPF)
+
+conf t
+router ospf 1
+ default-information originate always
+end
+
+
+
+@R4 (having OSPF and EIGRP)
+!pasok eigrp kay OSPF
+conf t
+router ospf 1
+redistribute eigrp 100 subnets
+exit
+
+!pasok OSPF kay EIGRP
+router eigrp 100
+ redistribute ospf 1 metric 1544 2000 255 1 1500
+end
+
+@P1 (configure proper default static route)
+conf t
+ ip route 0.0.0.0 0.0.0.0 10.2.1.1
+end
+
+
+
+@P2 (configure proper default static route)
+conf t
+ ip route 0.0.0.0 0.0.0.0 10.2.2.1
+end
+
+
+ping 8.8.8.8
+tracer 8.8.8.8
+
+
+
+
