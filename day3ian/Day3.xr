@@ -147,8 +147,6 @@ network 10.1.1.8 0.0.0.3 area 0
 network 10.1.1.4 0.0.0.3 area 0
 end
 
--------------------------------------------------------
-
 R4:
 configure terminal
 ip route 10.1.1.4 255.255.255.252 10.1.1.9
@@ -384,4 +382,134 @@ router ospf 1
 router-id 1.1.1.1
 network 10.1.1.0 0.0.0.3 area 12
 network 1.1.1.1 0.0.0.0 area 12
+end
+
+--------------------------------------------------
+
+BGP Routing (Border Gateway Protocol)
+
+router bgp (# - AS Number)
+bpg log-neighbor-changes
+neighbor (# - direct ip of next hop) remote-as # (as no of neighbor)
+network (# - network ip between this host and neighbor)
+end
+
+R1:
+config terminal
+router bgp 1
+bgp log-neighbor-changes
+neighbor 207.7.7.2 remote-as 2
+neighbor 209.9.9.3 remote-as 3
+neighbor 208.8.8.4 remote-as 45
+network 207.7.7.0 mask 255.255.255.0
+network 209.9.9.0 mask 255.255.255.0
+network 208.8.8.0 mask 255.255.255.0
+network 10.1.1.0 mask 255.255.255.252
+end
+
+I1:
+config terminal
+router bgp 45
+bgp log-neighbor-changes
+neighbor 45.4.5.5 remote-as 45
+neighbor 24.2.4.2 remote-as 2
+neighbor 208.8.8.1 remote-as 1
+network 45.4.5.0 mask 255.255.255.0
+network 24.2.4.0 mask 255.255.255.0
+network 208.8.8.0 mask 255.255.255.0
+!PretendInternet
+ network 0.0.0.0
+ ip route 0.0.0.0 0.0.0.0 null 0
+ ip route 10.0.0.0 255.0.0.0 208.8.8.1
+ ip route 192.168.0.0 255.255.0.0 208.8.8.1
+end
+
+
+====================================================
+DOUBLE CHECK
+=====================================================
+
+I2:
+configure terminal
+router bgp 2
+bgp log-neighbor-changes
+neighbor 25.25.5.5 remote-as 45
+neighbor 24.4.4.4 remote-as 45
+neighbor 207.7.7.1 remote-as 1
+neighbor 32.3.2.3 remote-as 3
+network 25.25.5.5.0 mask 255.255.255.0
+network 24.2.4.0 mask 255.255.255.0
+network 207.7.7.0 mask 255.255.255.0
+network 32.3.2.0 mask 255.255.255.0
+!PretendInternet
+network 0.0.0.0
+ip route 0.0.0.0 0.0.0.0 null 0
+ip route 10.0.0.0 255.0.0.0 207.7.7.1
+ip route 192.168.0.0 255.255.0.0 207.7.7.1
+end
+sho ip bgp summary
+
+===================================================
+
+I3:
+config terminal
+router bgp 3
+bgp log-neighbor-changes
+neighbor 35.3.5.5 remote-as 45
+neighbor 32.3.2.2 remote-as 2
+neighbor 209.9.9.1 remote-as 1
+network 35.3.5.0 mask 255.255.255.0
+network 32.3.2.0 mask 255.255.255.0
+network 209.9.9.0 mask 255.255.255.0
+!PretendInternet
+ network 0.0.0.0
+ ip route 0.0.0.0 0.0.0.0 null 0
+ ip route 10.0.0.0 255.0.0.0 208.8.8.1
+ ip route 192.168.0.0 255.255.0.0 209.9.9.1
+end
+
+I4:
+config terminal
+int lo8 
+ip address 8.8.8.8 255.255.255.255
+exit
+router bgp 45
+bgp log-neighbor-changes
+neighbor 45.4.5.4 remote-as 45
+neighbor 25.2.5.2 remote-as 2
+neighbor 35.3.5.3 remote-as 3
+network 45.4.5.0 mask 255.255.255.0
+network 25.2.5.0  mask 255.255.255.0
+network 35.3.5.0 mask 255.255.255.0
+network 8.8.8.8 mask 255.255.255.255
+end
+
+!ROUTE REDISTRIBUTION
+both configured routing protocol doesnt mean are auto advertise
+R1:
+config terminal
+router ospf 1
+default-information originate always
+end
+
+R4: OSPF+EIGRP
+configure terminal
+router ospf 1
+redistribute eigrp 100 subnets
+exit
+
+OSPF+EIGRP
+router eigrp 100
+redistribute ospf 1 metric 1544 2000 255 1 1500
+end
+
+P1: Config Proper default static Route
+configure terminal
+ip route 0.0.0.0 0.0.0.0 10.2.1.1
+end
+
+
+P2: Config Proper default static Route
+configure terminal
+ip route 0.0.0.0 0.0.0.0 10.2.2.1
 end
