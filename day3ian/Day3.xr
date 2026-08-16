@@ -373,3 +373,43 @@ no auto-summary
 network 10.1.4.8
 network 10.1.4.4
 end
+
+
+
+OSPF Routing (Open Shortest Route First)
+router ospf !(###number process ID PID)
+network !(directly) (wildcard) area (#number)
+
+R4:
+config terminal
+router ospf 1
+router-id 4.4.4.4
+network 10.1.1.8 0.0.0.3 area 34
+network 4.4.4.4 0.0.0.0 area 34
+end
+
+R3:
+config terminal
+router ospf 1
+router-id 3.3.3.3
+network 10.1.1.4 0.0.0.3 area 0
+network 10.1.1.8 0.0.0.3 area 34
+network 3.3.3.3 0.0.0.0 area 0
+end
+
+R2:
+config terminal
+router ospf 1
+router-id 2.2.2.2
+network 10.1.1.4 0.0.0.3 area 0
+network 10.1.1.0 0.0.0.3 area 12
+network 2.2.2.2 0.0.0.0 area 0
+end
+
+R1:
+config terminal
+router ospf 1
+router-id 1.1.1.1
+network 10.1.1.0 0.0.0.3 area 12
+network 1.1.1.1 0.0.0.0 area 12
+end
