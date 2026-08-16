@@ -146,36 +146,8 @@ network 3.3.3.3 0.0.0.0 area 0
 network 10.1.1.8 0.0.0.3 area 0
 network 10.1.1.4 0.0.0.3 area 0
 end
------------------------------------------
 
-
-
-R1:
-configure terminal
-interface e1/0
-router ospf 1
-exit
-router ospf
-router-id 1.1.1.1
-network 1.1.1.1 0.0.0.0 area 0
-network 10.1.1.0 0.0.0.0 area 0
-end
-
-R2:
-configure terminal
-interface e1/2
-exit
-router ospf 255
-router-id 2.2.2.2
-network 2.2.2.2 0.0.0.0 area 0
-network 10.1.1.1 0.0.0.0 area 0
-network 10.1.1.0 0.0.0.0 area 0
-end
-
-
-
-
------------------------------
+-------------------------------------------------------
 
 R4:
 configure terminal
