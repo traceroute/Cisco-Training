@@ -202,6 +202,174 @@ ip route 10.1.1.4 255.255.255.252 10.1.1.2
 end
 
 
+R4:
+configure terminal
+ip route 10.1.1.0 255.255.255.252 10.1.1.9
+ !(10.1.1.4 is NET IP for  10.1.1.5 & 10.1.1.6)
+end
+
+R1:
+configure terminal
+ip route 10.1.1.8 255.255.255.252 10.1.1.2
+!(10.1.1.4 is NET IP of 10.1.1.5 & 10.1.1.6)
+end
+
+@R1 TO R4
+config terminal
+no ip routing
+ip routing
+end
 
 
 
+S1:
+config terminal
+interface e1/0
+ip address 192.168.1.131 255.255.255.224
+no shutdown
+end
+bp
+
+S2:
+config terminal
+interface e1/0
+ip address 192.168.1.132 255.255.255.224
+no shutdown
+end
+bp
+
+
+D1:
+config terminal
+interface e1/0
+switchport access vlan 100
+end
+
+D2:
+config terminal
+interface e1/0
+switchport access vlan 100
+end
+
+---------------------------------------------
+S: FLOATING STATIC DEFAULT ROUTE CONFIGURATION
+
+S1:
+configure terminal
+ip route 0.0.0.0 0.0.0.0 192.168.1.129 1
+ip route 0.0.0.0 0.0.0.0 192.168.1.130 2
+end
+
+
+S2:
+configure terminal
+ip route 0.0.0.0 0.0.0.0 192.168.1.129 1
+ip route 0.0.0.0 0.0.0.0 192.168.1.130 2
+end
+
+
+S* FLOATING STATIC ROUTE CONFIGURATION
+
+S2:
+config terminal
+ip route 10.2.1.1 255.255.255.255 192.168.1.130 !(/32)
+ip route 10.2.1.0 255.255.255.224 192.168.129 !(/27)
+end
+bp
+
+!/32 is better than /27: longet prefix rule.
+
+DYNAMIC ROUTING
+
+
+!set DHCP Server for D1/D2
+
+D1:
+configure terminal
+ip dhcp excluded-address 10.2.1.1 10.2.1.99
+ip dhcp excluded-address 10.2.1.200 10.2.1.254
+ip dhcp pool vlan10
+network 10.2.1.0 255.255.255.0
+default-router 10.2.1.254
+end
+
+
+A1:
+config terminal
+int e0/0
+switchport mode access
+switchport access vlan 10
+end
+
+P1:
+config terminal
+interface e0/0
+ip add dhcp
+no shutdown
+end
+bp
+
+
+D2:
+configure terminal
+ip dhcp excluded-address 10.2.2.1 10.2.2.99
+ip dhcp excluded-address 10.2.2.200 10.2.2.254
+ip dhcp pool vlan20
+network 10.2.2.0 255.255.255.0
+default-router 10.2.2.254
+end
+
+A2:
+config terminal
+int e1/0
+switchport mode access
+switchport access vlan 20
+end
+
+
+P2:
+config terminal
+interface e1/0
+ip add dhcp
+no shutdown
+end
+bp
+
+
+
+--------------------------------------
+
+EIGRP
+
+router eigrp ### Autonomous System No.
+no auto-summary
+network <directly connected network> <wildcardof directly connected network (DCN)>
+
+
+D1:
+conf terminal
+router eigrp 100 !(AS Number)
+no auto-summary
+network 10.1.4.4
+network 10.2.1.0
+network 10.2.2.0
+network 192.168.1.128
+end
+
+D2:
+conf terminal
+router eigrp 100 !(AS Number)
+no auto-summary
+network 10.1.4.8
+network 10.2.1.0
+network 10.2.2.0
+network 192.168.1.128
+end
+
+R4:
+config terminal
+router eigrp 100 !(AS Number)
+no auto-summary
+network 10.1.4.8
+network 10.1.4.4
+end
