@@ -146,14 +146,61 @@ network 3.3.3.3 0.0.0.0 area 0
 network 10.1.1.8 0.0.0.3 area 0
 network 10.1.1.4 0.0.0.3 area 0
 end
+-----------------------------------------
+
+
 
 R1:
 configure terminal
-
+interface e1/0
+router ospf 1
+exit
+router ospf
+router-id 1.1.1.1
+network 1.1.1.1 0.0.0.0 area 0
+network 10.1.1.0 0.0.0.0 area 0
+end
 
 R2:
 configure terminal
 interface e1/2
+exit
+router ospf 255
+router-id 2.2.2.2
+network 2.2.2.2 0.0.0.0 area 0
+network 10.1.1.1 0.0.0.0 area 0
+network 10.1.1.0 0.0.0.0 area 0
+end
+
+
+
+
+-----------------------------
+
+R4:
+configure terminal
+ip route 10.1.1.4 255.255.255.252 10.1.1.9
+ !(10.1.1.4 is NET IP for  10.1.1.5 & 10.1.1.6)
+end
+
+R2:
+configure terminal
+ip route 10.1.1.8 255.255.255.252 10.1.1.6
+!(10.1.1.6 is NET IP of 10.1.1.9 & 10.1.1.10)
+end
+
+R3:
+configure terminal
+ip route 10.1.1.0 255.255.255.252 10.1.1.5
+ !(10.1.1.0 is NET IP for  10.1.1.1 & 10.1.1.2)
+end
+
+R1:
+configure terminal
+ip route 10.1.1.4 255.255.255.252 10.1.1.2
+!(10.1.1.4 is NET IP of 10.1.1.5 & 10.1.1.6)
+end
+
 
 
 
