@@ -11,7 +11,7 @@ _3Tier = "7"
 _WAN = "8"
 _NetAuto = "9"
 
-rst_ip = "10.4.4.2"
+rst_ip = "10.5.4.9"
 lab = crt.Dialog.Prompt("""
 What Lab will you be using? (Input the number of the corresponding lab.)
 
